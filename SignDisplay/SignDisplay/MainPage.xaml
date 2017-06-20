@@ -1,0 +1,15 @@
+﻿<Page
+    x:Class="SignDisplay.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SignDisplay"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#FF000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Image x:Name="view_image" Visibility="Collapsed" />
+        <WebView x:Name="view_web" Visibility="Collapsed"/>
+        <TextBlock Name="view_text" FontSize="50" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">asdasd</TextBlock>
+    </Grid>
+</Page>
