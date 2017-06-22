@@ -27,10 +27,12 @@ namespace SignDisplay
     public class ScreenManager
     {
 
-        string _baseURI = "http://foo.com:80/";
+        string _baseURI = "";
 
-        public async Task<Screen[]> GetScreensAsync()
+        public async Task<Screen[]> GetScreensAsync(string baseuri)
         {
+            _baseURI = baseuri;
+
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(_baseURI);
             client.DefaultRequestHeaders.Accept.Clear();

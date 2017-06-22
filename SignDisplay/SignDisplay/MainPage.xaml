@@ -8,8 +8,13 @@
     mc:Ignorable="d">
 
     <Grid Background="#FF000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel Name="configstack" Orientation="Vertical" VerticalAlignment="Stretch">
+            <TextBlock Foreground="White" Margin="0,50,0,0" FontSize="30">API Host:</TextBlock>
+            <TextBox Name="txt_uri" Text="http:///" Foreground="White" Margin="0,10,0,0"></TextBox>
+            <Button Name="btn_run" Click="btn_run_Click" Content="Run App" Foreground="White" BorderBrush="White" Margin="0,10,0,0"></Button>
+        </StackPanel>
         <Image x:Name="view_image" Visibility="Collapsed" />
         <WebView x:Name="view_web" Visibility="Collapsed"/>
-        <TextBlock Name="view_text" FontSize="50" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">asdasd</TextBlock>
+        <TextBlock Name="view_text" FontSize="100" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"></TextBlock>
     </Grid>
 </Page>
