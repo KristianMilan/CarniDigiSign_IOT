@@ -51,16 +51,11 @@ namespace SignDisplay
             }
 
 
-            Screen[] nsl = new Screen[sl.Length];
+            List<Screen> nsl;
+            nsl = sl.ToList<Screen>();
+            nsl.Sort((x, y) => Convert.ToInt32(x.order).CompareTo(Convert.ToInt32(y.order)));
 
-            for (int i = 0; i < sl.Length; i++)
-            {
-                int order = Convert.ToInt32(sl[i].order);
-                nsl[order] = sl[i];
-            }
-
-
-            return nsl;
+            return nsl.ToArray<Screen>();
         }
 
         public async Task<Screen> GetScreenAsync(string id)
