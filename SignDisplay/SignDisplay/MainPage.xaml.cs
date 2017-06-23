@@ -1,21 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -33,6 +21,7 @@ namespace SignDisplay
         int _currentIndex = 0;
         int _currentTimer = 0;
         DispatcherTimer _disTimer;
+        Tweet _t = null;
 
         public MainPage()
         {
@@ -72,6 +61,7 @@ namespace SignDisplay
             }
 
             Screen s = _screens[_currentIndex];
+            _t = null;
           
             if (s.sign_type == "web") {
                 view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
@@ -100,6 +90,17 @@ namespace SignDisplay
 
                 view_text.Text = s.sign_text;
             }
+            else if (s.sign_type == "tweet")
+            {
+                view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+                _t = await _sm.GetTweetAsync(s.uri);
+
+                view_web.Source = new Uri("ms-appx-web:///Tweet.html");
+
+            }
 
             _currentTimer = Convert.ToInt32(s.duration);
             _disTimer.Interval = new TimeSpan(0, 0, _currentTimer);
@@ -115,6 +116,15 @@ namespace SignDisplay
             _feedId = txt_feed.Text;
             configstack.Visibility = Visibility.Collapsed;
             GetScreens();
+        }
+
+        private async void view_web_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        {
+            if (_t != null)
+            {
+                await view_web.InvokeScriptAsync("setAuthor", new string[] { _t.author_name.ToString() });
+                await view_web.InvokeScriptAsync("setBody", new string[] { _t.html.ToString() });
+            }
         }
     }
 }

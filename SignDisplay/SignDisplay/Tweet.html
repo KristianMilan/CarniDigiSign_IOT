@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        h1 {
+            font-size: 64px;
+            color: #fff;
+        }
+        h3 {
+            font-size: 30px;
+            color: #fff;
+        }
+        body {
+            background-color: #000;
+            height: 100%;
+            width: 100%;
+        }
+        a,a:visited,a:link,a:active {
+            color:#fff;
+        }
+        #middle {
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="middle">
+        <center>
+            <h1 id="tweetbody"></h1>
+            <h3 id="tweetauthor"></h3>
+        </center>
+    </div>
+    <script>
+        function setAuthor(a) {
+            document.getElementById('tweetauthor').innerHTML = a;
+        }
+        function setBody(b) {
+            document.getElementById('tweetbody').innerHTML = b;
+        }
+    </script>
+</body>
+</html>
