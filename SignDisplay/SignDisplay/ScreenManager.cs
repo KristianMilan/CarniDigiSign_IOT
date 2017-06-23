@@ -28,10 +28,12 @@ namespace SignDisplay
     {
 
         string _baseURI = "";
+        string _feedId = "";
 
-        public async Task<Screen[]> GetScreensAsync(string baseuri)
+        public async Task<Screen[]> GetScreensAsync(string baseuri, string feedId)
         {
             _baseURI = baseuri;
+            _feedId = feedId;
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(_baseURI);
@@ -42,7 +44,7 @@ namespace SignDisplay
             string items = "";
 
 
-            HttpResponseMessage response = await client.GetAsync("screens");
+            HttpResponseMessage response = await client.GetAsync("feeds/"+_feedId);
             if (response.IsSuccessStatusCode)
             {
                 items = await response.Content.ReadAsStringAsync();
@@ -58,27 +60,5 @@ namespace SignDisplay
             return nsl.ToArray<Screen>();
         }
 
-        public async Task<Screen> GetScreenAsync(string id)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(_baseURI);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            Screen s = null;
-            string item = "";
-
-
-            HttpResponseMessage response = await client.GetAsync("screens/" + id);
-            if (response.IsSuccessStatusCode)
-            {
-                item = await response.Content.ReadAsStringAsync();
-                s = JsonConvert.DeserializeObject<Screen>(item);
-
-            }
-
-            return s;
-        }
-        
     }
 }

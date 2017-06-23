@@ -29,6 +29,7 @@ namespace SignDisplay
         Screen[] _screens = null;
         ScreenManager _sm = new ScreenManager();
         string _url = "";
+        string _feedId = "";
         int _currentIndex = 0;
         int _currentTimer = 0;
         DispatcherTimer _disTimer;
@@ -59,7 +60,7 @@ namespace SignDisplay
 
         public async void GetScreens()
         {
-            _screens = await _sm.GetScreensAsync(_url);
+            _screens = await _sm.GetScreensAsync(_url, _feedId);
             DisplayNext();
         }
 
@@ -67,7 +68,7 @@ namespace SignDisplay
         {
             if (_currentIndex == _screens.Length) {
                 _currentIndex = 0;
-                _screens = await _sm.GetScreensAsync(_url);
+                _screens = await _sm.GetScreensAsync(_url, _feedId);
             }
 
             Screen s = _screens[_currentIndex];
@@ -111,6 +112,7 @@ namespace SignDisplay
         private void btn_run_Click(object sender, RoutedEventArgs e)
         {
             _url = txt_uri.Text;
+            _feedId = txt_feed.Text;
             configstack.Visibility = Visibility.Collapsed;
             GetScreens();
         }

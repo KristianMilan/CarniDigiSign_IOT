@@ -11,6 +11,8 @@
         <StackPanel Name="configstack" Orientation="Vertical" VerticalAlignment="Stretch">
             <TextBlock Foreground="White" Margin="0,50,0,0" FontSize="30">API Host:</TextBlock>
             <TextBox Name="txt_uri" Text="http:///" Foreground="White" Margin="0,10,0,0"></TextBox>
+            <TextBlock Foreground="White" Margin="0,50,0,0" FontSize="30">Feed ID:</TextBlock>
+            <TextBox Name="txt_feed" Text="0" Foreground="White" Margin="0,10,0,0"></TextBox>
             <Button Name="btn_run" Click="btn_run_Click" Content="Run App" Foreground="White" BorderBrush="White" Margin="0,10,0,0"></Button>
         </StackPanel>
         <Image x:Name="view_image" Visibility="Collapsed" />
