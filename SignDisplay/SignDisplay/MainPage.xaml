@@ -18,5 +18,6 @@
         <Image x:Name="view_image" Visibility="Collapsed" />
         <WebView x:Name="view_web" Visibility="Collapsed" NavigationCompleted="view_web_NavigationCompleted"/>
         <TextBlock Name="view_text" FontSize="100" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"></TextBlock>
+        <MediaElement x:Name="view_media" AutoPlay="True" AreTransportControlsEnabled="False" Visibility="Collapsed" />
     </Grid>
 </Page>
