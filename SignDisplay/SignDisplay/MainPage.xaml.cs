@@ -40,6 +40,8 @@ namespace SignDisplay
             _disTimer = new DispatcherTimer();
             _disTimer.Tick += _disTimer_Tick;
 
+            //run();                        // autorun
+
         }
 
         private void _disTimer_Tick(object sender, object e)
@@ -102,7 +104,7 @@ namespace SignDisplay
                 view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-                view_text.Text = s.sign_text;
+                view_text.Document.SetText(Windows.UI.Text.TextSetOptions.None, s.sign_text);
             }
             else if (s.sign_type == "tweet")
             {
@@ -126,6 +128,11 @@ namespace SignDisplay
         }
 
         private void btn_run_Click(object sender, RoutedEventArgs e)
+        {
+            run();
+        }
+
+        private void run()
         {
             _url = txt_uri.Text;
             _feedId = txt_feed.Text;
