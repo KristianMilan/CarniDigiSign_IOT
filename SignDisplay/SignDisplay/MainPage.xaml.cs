@@ -40,7 +40,7 @@ namespace SignDisplay
             _disTimer = new DispatcherTimer();
             _disTimer.Tick += _disTimer_Tick;
 
-            //run();                        // autorun
+            //autorun();                        // autorun
 
         }
 
@@ -65,65 +65,74 @@ namespace SignDisplay
             Screen s = _screens[_currentIndex];
             _t = null;
 
-            if (s.sign_type == "web")
+            if (s.sign_type == "hide")
             {
-                view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-
-                view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                view_web.Navigate(new Uri(s.uri));
-
+                _currentIndex = _currentIndex + 1;
+                DisplayNext();
             }
-            if (s.sign_type == "video")
+            else
             {
-                view_web.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_media.Visibility = Windows.UI.Xaml.Visibility.Visible;
 
-                view_media.Source = new Uri(s.uri);
+                if (s.sign_type == "web")
+                {
+                    view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
+                    view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    view_web.Navigate(new Uri(s.uri));
+
+                }
+                if (s.sign_type == "video")
+                {
+                    view_web.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_media.Visibility = Windows.UI.Xaml.Visibility.Visible;
+
+                    view_media.Source = new Uri(s.uri);
+
+                }
+                else if (s.sign_type == "image")
+                {
+                    view_image.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    view_web.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+                    BitmapImage imageSource = new BitmapImage(new Uri(s.uri));
+                    view_image.Width = imageSource.DecodePixelHeight = (int)this.ActualWidth;
+                    view_image.Source = imageSource;
+                }
+                else if (s.sign_type == "text")
+                {
+                    view_text.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    view_web.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+                    view_text.Document.SetText(Windows.UI.Text.TextSetOptions.None, s.sign_text);
+                }
+                else if (s.sign_type == "tweet")
+                {
+                    view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                    view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                    view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+
+                    _t = await _sm.GetTweetAsync(s.uri);
+
+                    view_web.Source = new Uri("ms-appx-web:///Tweet.html");
+
+                }
+
+                _currentTimer = Convert.ToInt32(s.duration);
+                _disTimer.Interval = new TimeSpan(0, 0, _currentTimer);
+                _disTimer.Start();
+
+                _currentIndex = _currentIndex + 1;
             }
-            else if (s.sign_type == "image")
-            {
-                view_image.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                view_web.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-
-                BitmapImage imageSource = new BitmapImage(new Uri(s.uri));
-                view_image.Width = imageSource.DecodePixelHeight = (int)this.ActualWidth;
-                view_image.Source = imageSource;
-            }
-            else if (s.sign_type == "text")
-            {
-                view_text.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                view_web.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-
-                view_text.Document.SetText(Windows.UI.Text.TextSetOptions.None, s.sign_text);
-            }
-            else if (s.sign_type == "tweet")
-            {
-                view_web.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                view_image.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-
-                _t = await _sm.GetTweetAsync(s.uri);
-
-                view_web.Source = new Uri("ms-appx-web:///Tweet.html");
-
-            }
-
-            _currentTimer = Convert.ToInt32(s.duration);
-            _disTimer.Interval = new TimeSpan(0, 0, _currentTimer);
-            _disTimer.Start();
-
-            _currentIndex = _currentIndex + 1;
             
         }
 
@@ -138,6 +147,13 @@ namespace SignDisplay
             _feedId = txt_feed.Text;
             configstack.Visibility = Visibility.Collapsed;
             GetScreens();
+        }
+
+        private void autorun()
+        {
+            txt_uri.Text = "";
+            txt_feed.Text = "h";
+            run();
         }
 
         private async void view_web_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
