@@ -47,11 +47,13 @@ namespace SignDisplay
 
         string _baseURI = "";
         string _feedId = "";
+        string _passcode = "";
 
-        public async Task<Screen[]> GetScreensAsync(string baseuri, string feedId)
+        public async Task<Screen[]> GetScreensAsync(string baseuri, string feedId, string passcode)
         {
             _baseURI = baseuri;
             _feedId = feedId;
+            _passcode = passcode;
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(_baseURI);
@@ -62,7 +64,7 @@ namespace SignDisplay
             string items = "";
 
 
-            HttpResponseMessage response = await client.GetAsync("feeds/" + _feedId);
+            HttpResponseMessage response = await client.GetAsync("feeds?secret="+_passcode+"&feed=" + _feedId);
             if (response.IsSuccessStatusCode)
             {
                 items = await response.Content.ReadAsStringAsync();
