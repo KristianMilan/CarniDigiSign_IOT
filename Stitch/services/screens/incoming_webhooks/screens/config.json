@@ -1,0 +1,12 @@
+{
+    "id": "5be43db38c5feba0a24e0343",
+    "name": "screens",
+    "run_as_user_id": "",
+    "run_as_user_id_script_source": "",
+    "options": {
+        "httpMethod": "GET",
+        "secret": "",
+        "validationMethod": "SECRET_AS_QUERY_PARAM"
+    },
+    "respond_result": false
+}

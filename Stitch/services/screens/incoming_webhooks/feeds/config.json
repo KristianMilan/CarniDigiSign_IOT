@@ -1,0 +1,12 @@
+{
+    "id": "5be4424e3e0e0bab5c9c16ff",
+    "name": "feeds",
+    "run_as_user_id": "",
+    "run_as_user_id_script_source": "",
+    "options": {
+        "httpMethod": "GET",
+        "secret": "",
+        "validationMethod": "SECRET_AS_QUERY_PARAM"
+    },
+    "respond_result": false
+}

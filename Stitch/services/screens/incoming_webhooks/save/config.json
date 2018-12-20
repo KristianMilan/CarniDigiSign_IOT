@@ -1,0 +1,12 @@
+{
+    "id": "5be44e57f68eb0b4e18c4a25",
+    "name": "save",
+    "run_as_user_id": "",
+    "run_as_user_id_script_source": "",
+    "options": {
+        "httpMethod": "POST",
+        "secret": "",
+        "validationMethod": "SECRET_AS_QUERY_PARAM"
+    },
+    "respond_result": false
+}
