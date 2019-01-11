@@ -1,4 +1,8 @@
 ﻿using System;
+using Windows.Security.Cryptography;
+using Windows.Security.Cryptography.Core;
+using Windows.Storage.Streams;
+using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -42,6 +46,7 @@ namespace SignDisplay
             _disTimer.Tick += _disTimer_Tick;
 
             //autorun();                        // autorun
+            autoprovision();
 
         }
 
@@ -157,6 +162,31 @@ namespace SignDisplay
             txt_feed.Text = "pp";
             txt_passcode.Text = "carnival";
             run();
+        }
+
+        private async void autoprovision()
+        {
+            // https://stackoverflow.com/questions/34153786/unique-device-id-uwp
+            HardwareToken token = HardwareIdentification.GetPackageSpecificToken(null);
+            IBuffer hardwareId = token.Id;
+            HashAlgorithmProvider hasher = HashAlgorithmProvider.OpenAlgorithm("MD5");
+            IBuffer hashed = hasher.HashData(hardwareId);
+            string hashedString = CryptographicBuffer.EncodeToHexString(hashed);
+
+            ProvisionManager pm = new ProvisionManager();
+            AutoProvision ap = await pm.GetFeed("", "", hashedString);
+
+            try
+            {
+                txt_uri.Text = ap.baseurl;
+                txt_feed.Text = ap.feed;
+                txt_passcode.Text = ap.secret;
+                run();
+            } catch(Exception e)
+            {
+                txt_uri.Text = ap.error;
+            }
+            
         }
 
         private async void view_web_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
