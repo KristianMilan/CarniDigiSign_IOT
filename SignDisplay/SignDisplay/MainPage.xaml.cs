@@ -142,11 +142,6 @@ namespace SignDisplay
             
         }
 
-        private void btn_run_Click(object sender, RoutedEventArgs e)
-        {
-            run();
-        }
-
         private void run()
         {
             _url = txt_uri.Text;
@@ -185,6 +180,7 @@ namespace SignDisplay
             } catch(Exception e)
             {
                 txt_uri.Text = ap.error;
+                txt_feed.Text = hashedString;
             }
             
         }
@@ -196,6 +192,16 @@ namespace SignDisplay
                 await view_web.InvokeScriptAsync("setAuthor", new string[] { _t.author_name.ToString() });
                 await view_web.InvokeScriptAsync("setBody", new string[] { _t.html.ToString() });
             }
+        }
+
+        private void btn_autoprov_Click(object sender, RoutedEventArgs e)
+        {
+            autoprovision();
+        }
+
+        private void btn_run_Click(object sender, RoutedEventArgs e)
+        {
+            run();
         }
     }
 }
