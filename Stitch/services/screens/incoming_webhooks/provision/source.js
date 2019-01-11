@@ -9,10 +9,18 @@ exports = async function(payload,response) {
   } 
   
   if (docs) {
-    r = JSON.stringify(docs);
+    if(docs.hasOwnProperty("baseurl")) {
+      r = JSON.stringify(docs);
+    } else {
+      r = JSON.stringify({"error":"registration request pending"});
+    }
   } else {
-    await conn.insertOne({"token":token});
-    r = JSON.stringify({"error":"not yet registered."});
+    try {
+      await conn.insertOne({"token":token});
+      r = JSON.stringify({"error":"not yet registered"});
+    } catch (err) {
+      r = JSON.stringify({"error":"registration request pending"});
+    }
   }
   
   //console.log(r);
