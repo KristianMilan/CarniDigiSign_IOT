@@ -99,12 +99,14 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProvisionManager.cs" />
     <Compile Include="ScreenManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <PRIResource Include="Resources.resw" />
     <None Include="SignDisplay_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

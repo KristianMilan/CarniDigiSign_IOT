@@ -8,8 +8,9 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using Windows.ApplicationModel.Resources;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 
 namespace SignDisplay
 {
@@ -31,6 +32,8 @@ namespace SignDisplay
         string _apbaseurl = "";
         string _apsecret = "";
 
+        int _errorCount = 0;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -48,7 +51,9 @@ namespace SignDisplay
             _disTimer = new DispatcherTimer();
             _disTimer.Tick += _disTimer_Tick;
 
-            //autorun();                        // autorun
+            var resources = new ResourceLoader("Resources");
+            _apbaseurl = resources.GetString("AutoProvsionBaseUrl");
+            _apsecret = resources.GetString("AutoProvisionSecret");
             autoprovision(_apbaseurl,_apsecret);
 
         }
@@ -60,15 +65,47 @@ namespace SignDisplay
 
         public async void GetScreens()
         {
-            _screens = await _sm.GetScreensAsync(_url, _feedId, _passcode);
-            DisplayNext();
+            try
+            {
+                _screens = await _sm.GetScreensAsync(_url, _feedId, _passcode);
+                DisplayNext();
+            } catch (Exception ex)
+            {
+                _errorCount += 1;
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                // kill the app
+                CoreApplication.Exit();
+            }
         }
 
         async void DisplayNext()
         {
             if (_currentIndex == _screens.Length) {
                 _currentIndex = 0;
-                _screens = await _sm.GetScreensAsync(_url, _feedId, _passcode);
+                try
+                {
+                    _screens = await _sm.GetScreensAsync(_url, _feedId, _passcode);
+                }
+                catch(Exception ex)
+                {
+                    _errorCount += 1;
+                    await Task.Delay(TimeSpan.FromSeconds(20));
+                    if(_errorCount>1)
+                    {
+                        // kill the app
+                        AppRestartFailureReason result = await CoreApplication.RequestRestartAsync("");
+                        if (result == AppRestartFailureReason.NotInForeground ||
+                            result == AppRestartFailureReason.RestartPending ||
+                            result == AppRestartFailureReason.Other)
+                        {
+                            GetScreens();
+                        }
+                    }
+                    else
+                    {
+                        DisplayNext();
+                    }
+                }
             }
 
             Screen s = _screens[_currentIndex];
@@ -130,9 +167,15 @@ namespace SignDisplay
                     view_text.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                     view_media.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
 
-                    _t = await _sm.GetTweetAsync(s.uri);
-
-                    view_web.Source = new Uri("ms-appx-web:///Tweet.html");
+                    try
+                    {
+                        _t = await _sm.GetTweetAsync(s.uri);
+                        view_web.Source = new Uri("ms-appx-web:///Tweet.html");
+                    } catch (Exception ex)
+                    {
+                        _errorCount += 1;
+                        DisplayNext();
+                    }
 
                 }
 
@@ -154,14 +197,6 @@ namespace SignDisplay
             GetScreens();
         }
 
-        private void autorun()
-        {
-            txt_uri.Text = "";
-            txt_feed.Text = "pp";
-            txt_passcode.Text = "carnival";
-            run();
-        }
-
         private async void autoprovision(string baseurl, string secret)
         {
             if (baseurl != "")
@@ -174,19 +209,29 @@ namespace SignDisplay
                 string hashedString = CryptographicBuffer.EncodeToHexString(hashed);
 
                 ProvisionManager pm = new ProvisionManager();
-                AutoProvision ap = await pm.GetFeed(baseurl, secret, hashedString);
-
+                AutoProvision ap;
                 try
                 {
-                    txt_uri.Text = ap.baseurl;
-                    txt_feed.Text = ap.feed;
-                    txt_passcode.Text = ap.secret;
-                    run();
+                    ap = await pm.GetFeed(baseurl, secret, hashedString);
+                    if (ap.error == "")
+                    {
+                        txt_uri.Text = ap.baseurl;
+                        txt_feed.Text = ap.feed;
+                        txt_passcode.Text = ap.secret;
+                        run();
+                    }
+                    else
+                    {
+                        txt_uri.Text = ap.error;
+                        txt_feed.Text = hashedString;
+                    }
                 }
-                catch (Exception e)
+                catch(Exception ex)
                 {
-                    txt_uri.Text = ap.error;
-                    txt_feed.Text = hashedString;
+                    txt_uri.Text = "Error auto provisioning... probably network... trying again in 10";
+                    txt_feed.Text = ex.ToString();
+                    await Task.Delay(TimeSpan.FromSeconds(10));
+                    autoprovision(baseurl, secret);
                 }
             }
         }
