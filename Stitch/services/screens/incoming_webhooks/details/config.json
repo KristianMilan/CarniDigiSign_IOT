@@ -1,0 +1,12 @@
+{
+    "id": "5c3a62cb4a8884d29cce5021",
+    "name": "details",
+    "run_as_user_id": "",
+    "run_as_user_id_script_source": "",
+    "options": {
+        "httpMethod": "GET",
+        "secret": "",
+        "validationMethod": "SECRET_AS_QUERY_PARAM"
+    },
+    "respond_result": false
+}
