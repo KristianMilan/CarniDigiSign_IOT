@@ -1,8 +1,4 @@
 ﻿using System;
-using Windows.Security.Cryptography;
-using Windows.Security.Cryptography.Core;
-using Windows.Storage.Streams;
-using Windows.System.Profile;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -11,6 +7,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.ApplicationModel.Resources;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
+using Windows.Security.ExchangeActiveSyncProvisioning;
 
 namespace SignDisplay
 {
@@ -201,18 +198,15 @@ namespace SignDisplay
         {
             if (baseurl != "")
             {
-                // https://stackoverflow.com/questions/34153786/unique-device-id-uwp
-                HardwareToken token = HardwareIdentification.GetPackageSpecificToken(null);
-                IBuffer hardwareId = token.Id;
-                HashAlgorithmProvider hasher = HashAlgorithmProvider.OpenAlgorithm("MD5");
-                IBuffer hashed = hasher.HashData(hardwareId);
-                string hashedString = CryptographicBuffer.EncodeToHexString(hashed);
+                //https://stackoverflow.com/questions/31746613/how-do-i-get-a-unique-identifier-for-a-device-within-windows-10-universal
+                var deviceInformation = new EasClientDeviceInformation();
+                string Id = deviceInformation.Id.ToString();
 
                 ProvisionManager pm = new ProvisionManager();
                 AutoProvision ap;
                 try
                 {
-                    ap = await pm.GetFeed(baseurl, secret, hashedString);
+                    ap = await pm.GetFeed(baseurl, secret, Id);
                     if (ap.error == "")
                     {
                         txt_uri.Text = ap.baseurl;
@@ -223,7 +217,9 @@ namespace SignDisplay
                     else
                     {
                         txt_uri.Text = ap.error;
-                        txt_feed.Text = hashedString;
+                        txt_feed.Text = Id;
+                        await Task.Delay(TimeSpan.FromSeconds(90));
+                        autoprovision(baseurl, secret);
                     }
                 }
                 catch(Exception ex)
