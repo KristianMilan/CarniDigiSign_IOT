@@ -62,9 +62,6 @@ Supported options for the type of screen are:
 * Change the default administrator password on the Windows installation, use an isolated network, disable remote access to it
 * Use strong random secret strings 
 
-# Known bugs
-* When visiting certain webpages with continually changing graphics and content, there appears to be a memory leak I cannot identify. Eventually the app will crash but it will restart right where it left off without issue
-
 # Sample docs
 ## Registration on initial reg
 ```
