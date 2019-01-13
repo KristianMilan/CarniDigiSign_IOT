@@ -8,6 +8,9 @@ using Windows.ApplicationModel.Resources;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Security.ExchangeActiveSyncProvisioning;
+using Windows.Devices.Bluetooth;
+using Windows.Devices.Bluetooth.Advertisement;
+using Windows.Storage.Streams;
 
 namespace SignDisplay
 {
@@ -28,6 +31,8 @@ namespace SignDisplay
 
         string _apbaseurl = "";
         string _apsecret = "";
+        string _eddystoneuri = "";
+        private BluetoothLEAdvertisementPublisher publisher;
 
         int _errorCount = 0;
 
@@ -51,6 +56,8 @@ namespace SignDisplay
             var resources = new ResourceLoader("Resources");
             _apbaseurl = resources.GetString("AutoProvsionBaseUrl");
             _apsecret = resources.GetString("AutoProvisionSecret");
+            _eddystoneuri = resources.GetString("EddystoneURI");
+
             autoprovision(_apbaseurl,_apsecret);
 
         }
@@ -218,6 +225,9 @@ namespace SignDisplay
                     {
                         txt_uri.Text = ap.error;
                         txt_feed.Text = Id;
+                        string uri = "https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=" + Uri.EscapeDataString(_apbaseurl + "details?token=" + Id);
+                        BitmapImage imageSource = new BitmapImage(new Uri(uri));
+                        img_qr.Source = imageSource;
                         await Task.Delay(TimeSpan.FromSeconds(90));
                         autoprovision(baseurl, secret);
                     }
