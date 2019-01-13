@@ -48,6 +48,13 @@ Supported options for the type of screen are:
 * There is a `details` Stitch endpoint that you can get to either from the above `list` endpoint or via the QR code generated while device is pending registration. The idea here is you can print the QR code and affix it to the device to track inventory. You can get to this page via the UUID `token` generated or via the MAC address. 
 * The `registration` collection shoudl be manually updated (no UI yet) to store the `mac`, `secret`, `baseurl`, `feed`, `name`, `location`, `model` and will autopopulate `firstseen` and `lastseen` dates based on registration time and last registration request respectively. The `secret`, `baseurl`, and `feed` are required to function (and obviously `token` which will automatically be there) while all other attributes are strictly for tracking purposes within the `list` and `details` UI endpoints for management. Not for required functionality.
 
+## Disabling auto-provisioning
+* comment out the line in `SignDisplay/SignDisplay/MainPage.xaml.cs` in `MainPage` method the line starting `autoprovision(` 
+* Push to the device
+* make sure that you have a keyboard plugged into the Pi
+* Manually fill out the URL, secret, and feed into the relevent text boxes
+* Click the button to load the REST api call to get the screens
+
 # Implementation details
 * the token is generated using the `EasClientDeviceInformation` in `Windows.Security.ExchangeActiveSyncProvisioning` and should persist after reboots during my testing. Other methods did not persist on the Pi. Did not yet test to see if it persists after updates
 * Use a Pi and maintain physical security over this when deployed to make sure that it cannot be tampered with as the URL and secret are not encrypted on the SD Card
