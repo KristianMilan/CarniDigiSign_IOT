@@ -8,10 +8,9 @@ exports = async function(payload,response) {
   
   r = r + "<html><head><title>Device Inventory Details</title></head>";
   r = r +'<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">';
-  r = r + '<link rel="stylesheet" href="https://getbootstrap.com/docs/4.2/examples/sign-in/signin.css">';
-  r = r + '<style>td,th { padding:5px; } .form-signin { max-width:600px !important; width: 100 !important%; } </style>';
-  r = r + "<body style='text-center'><table class='form-signin table table-striped'>";
-  r = r + "<thead><tr><th>MAC</th><th>Token</th><th>Location</th><th>Link</th></tr></thead><tbody>";
+  r = r + '<style>td,th { padding:5px; } .form-signin { max-width:50% !important; text-align:center; width:50%;margin-left:25%; } body { padding-top: 40px;  padding-bottom: 40px;  background-color: #f5f5f5; height:100%; width:100%;} </style>';
+  r = r + "<body><table class='form-signin table table-striped'>";
+  r = r + "<thead class='thead-dark'><tr><th>MAC</th><th>Token</th><th>Location</th><th>Link</th></tr></thead><tbody>";
   
   let docs = await conn.find().toArray();
   
