@@ -19,7 +19,7 @@ exports = async function(payload,response) {
     r = r + "<td><code>"+docs[i].mac|| ''+"</code></td>";
     r = r + "<td><code>"+docs[i].token|| ''+"</code></td>";
     r = r + "<td>"+docs[i].location|| ''+"</td>";
-    var url = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/digisign-ywoti/service/screens/incoming_webhook/details?token="+docs[i].token;
+    var url = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/digisign-ywoti/service/screens/incoming_webhook/details?docid="+docs[i]._id;
     r = r + "<td>"+docs[i].lastseen|| ''+"</td>";
     r = r + "<td><a href='"+url+"'>Link</a></td>";
     r = r + "</tr>";
