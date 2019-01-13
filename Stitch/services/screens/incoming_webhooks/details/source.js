@@ -3,6 +3,7 @@
 exports = async function(payload,response) {
   var mac = payload.query.mac || '';
   var token = payload.query.token || '';
+  var docid = payload.query.docid || '';
   var conn = context.services.get("mongodb-atlas").db("digisign").collection("registration");
   var r = '';
   
@@ -11,10 +12,12 @@ exports = async function(payload,response) {
   }
   else if (token.length>0) {
     var doc = await conn.findOne({"token":token});
+  } else if (docid.length>0) {
+    var doc = await conn.findOne({"_id":BSON.ObjectId(docid)});
   }
   
   if(doc) {
-    var thisUrl = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/digisign-ywoti/service/screens/incoming_webhook/details?mac="+doc.mac;
+    var thisUrl = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/digisign-ywoti/service/screens/incoming_webhook/details?docid="+doc._id;
     
     var baseurl = doc.baseurl|| '';
     
@@ -24,13 +27,14 @@ exports = async function(payload,response) {
     r = r + '<style>td,th { padding:5px; } .form-signin { max-width:600px !important; width: 100 !important%; } </style>';
     r = r + "<body style='text-center'><table class='form-signin table table-striped'>";
     r = r + "<tr><th colspan='2'><h3>Device Inventory Details</h3></th></tr>";
+    r = r + "<tr><th>ID</th><td><code>"+doc._id|| ''+"</code></td>";
     r = r + "<tr><th>MAC</th><td><code>"+doc.mac|| ''+"</code></td>";
     r = r + "<tr><th>Token</th><td><code>"+doc.token|| ''+"</code></td>";
     r = r + "<tr><th>Friendly Name</th><td>"+doc.name|| ''+"</td>";
     r = r + "<tr><th>Location</th><td>"+doc.location|| ''+"</td>";
     r = r + "<tr><th>Model</th><td>"+doc.model|| ''+"</td>";
     r = r + "<tr><th>Feed</th><td>"+doc.feed|| ''+"</td>";
-    r = r + "<tr><th>URL</th><td><a href='"+baseurl+"'>"+baseurl+"</a></td></tr>";
+    r = r + "<tr><th>URL</th><td><small style='font-size:10px;'><a href='"+baseurl+"'>"+baseurl+"</a></small></td></tr>";
     r = r + "<tr><th>Secret</th><td>Redacted</td>";
     r = r + "<tr><th>Initial Req Request</th><td>"+doc.firstseen|| ''+"</td>";
     r = r + "<tr><th>Last Reg Reqeust</th><td>"+doc.lastseen|| ''+"</td>";
