@@ -38,6 +38,65 @@ Supported options for the type of screen are:
 * It will wait on the regirstration page seen above in the screenshot and should send a text message to you
 * Log into Atlas and manually enter the `feed`, `baseurl`, etc as expected for this to work
 * Every 90 seconds or so the Pi will update to check if it is registered and start the slideshow
+* Add to the `screens` collection with the screens needed to rotate. This can be done manually (sample docs below) or via the other app listed above in the readme
 
 # Data flow 
 ![](SS/FlowChart.png)
+
+# Additional features
+* There is a `list` Stitch endpoint that when visited will show all registered devices
+* There is a `details` Stitch endpoint that you can get to either from the above `list` endpoint or via the QR code generated while device is pending registration. The idea here is you can print the QR code and affix it to the device to track inventory. You can get to this page via the UUID `token` generated or via the MAC address. 
+* The `registration` collection shoudl be manually updated (no UI yet) to store the `mac`, `secret`, `baseurl`, `feed`, `name`, `location`, `model` and will autopopulate `firstseen` and `lastseen` dates based on registration time and last registration request respectively. The `secret`, `baseurl`, and `feed` are required to function (and obviously `token` which will automatically be there) while all other attributes are strictly for tracking purposes within the `list` and `details` UI endpoints for management. Not for required functionality.
+
+# Implementation details
+* the token is generated using the `EasClientDeviceInformation` in `Windows.Security.ExchangeActiveSyncProvisioning` and should persist after reboots during my testing. Other methods did not persist on the Pi. Did not yet test to see if it persists after updates
+* Use a Pi and maintain physical security over this when deployed to make sure that it cannot be tampered with as the URL and secret are not encrypted on the SD Card
+* It is recommended to use a dumb TV to plug this into as smart TVs leave another attach vector to manipulation by passers-by
+* Change the default administrator password on the Windows installation, use an isolated network, disable remote access to it
+* Use strong random secret strings 
+
+# Known bugs
+* When visiting certain webpages with continually changing graphics and content, there appears to be a memory leak I cannot identify. Eventually the app will crash but it will restart right where it left off without issue
+
+# Sample docs
+## Registration on initial reg
+```
+{
+    "_id":"5c3b8c3598f568ae6946bda2",
+    "token":"0c93f018-a23b-5b42-ee71-79a607da2a40",
+    "lastseen":"2019-01-13T19:20:01.682Z",
+    "firstseen":"2019-01-13T19:06:29.693Z"
+}
+```
+## Registration after manual update
+```
+{
+    "_id":"5c3943c75ee2663fe3a1b230",
+    "token":"eb89e839-3850-dadf-7970-7b977627ec73",
+    "secret":"supersecretstring",
+    "feed":"nameoffeed",
+    "mac":"b8:92:cb:f4:aa:b1",
+    "baseurl":"https://stitchurlhere",
+    "lastseen":"2019-01-13T18:36:06.881Z",
+    "name":"Test Subject 1",
+    "location":"Chris's Desk",
+    "model":"Raspberry Pi 3b",
+    "firstseen":"2019-01-11T22:10:43.066Z"
+}
+```
+## Screens
+```
+{
+    "_id":"594bef61d3d13001432045b0",
+    "__v":0,
+    "created_date":"2017-06-22T16:25:05.471Z",
+    "duration":"10", // seconds to display content before rotate
+    "feed":"nameoffeed",
+    "modified_date":"2017-06-22T16:25:05.471Z",
+    "name":"Connect",
+    "order":"140", // order to be displayed
+    "sign_text":"",
+    "sign_type":"image", // see above for types
+    "uri":"https://something.com/pic.jpg
+}
+```
