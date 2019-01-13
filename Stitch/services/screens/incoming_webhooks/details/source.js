@@ -32,6 +32,7 @@ exports = async function(payload,response) {
     r = r + "<tr><th>Feed</th><td>"+doc.feed|| ''+"</td>";
     r = r + "<tr><th>URL</th><td><a href='"+baseurl+"'>"+baseurl+"</a></td></tr>";
     r = r + "<tr><th>Secret</th><td>Redacted</td>";
+    r = r + "<tr><th>Initial Req Request</th><td>"+doc.firstseen|| ''+"</td>";
     r = r + "<tr><th>Last Reg Reqeust</th><td>"+doc.lastseen|| ''+"</td>";
     r = r + "<tr><th>QR Code</th><td style='background-color:#ffffff; text-align:center;'><img src='https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl="+encodeURI(thisUrl)+"'/></td>";
     r = r + "</table></body></html>";
