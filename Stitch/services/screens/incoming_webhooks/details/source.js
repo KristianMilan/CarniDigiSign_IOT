@@ -17,29 +17,33 @@ exports = async function(payload,response) {
   }
   
   if(doc) {
-    var thisUrl = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/digisign-ywoti/service/screens/incoming_webhook/details?docid="+doc._id;
-    
-    var baseurl = doc.baseurl|| '';
+    var rootUrl = "https://webhooks.mongodb-stitch.com/api/client/v2.0/app/digisign-ywoti/service/screens/incoming_webhook/";
+    var thisUrl = rootUrl+"details?docid="+doc._id;
+    var postUrl = rootUrl+"editDetails?id="+doc._id;
     
     r = r + "<html><head><title>Device Inventory Details</title></head>";
     r = r +'<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">';
     r = r + '<link rel="stylesheet" href="https://getbootstrap.com/docs/4.2/examples/sign-in/signin.css">';
-    r = r + '<style>td,th { padding:5px; } .form-signin { max-width:600px !important; width: 100 !important%; } </style>';
-    r = r + "<body style='text-center'><table class='form-signin table table-striped'>";
-    r = r + "<tr><th colspan='2'><h3>Device Inventory Details</h3></th></tr>";
-    r = r + "<tr><th>ID</th><td><code>"+doc._id|| ''+"</code></td>";
-    r = r + "<tr><th>MAC</th><td><code>"+doc.mac|| ''+"</code></td>";
-    r = r + "<tr><th>Token</th><td><code>"+doc.token|| ''+"</code></td>";
-    r = r + "<tr><th>Friendly Name</th><td>"+doc.name|| ''+"</td>";
-    r = r + "<tr><th>Location</th><td>"+doc.location|| ''+"</td>";
-    r = r + "<tr><th>Model</th><td>"+doc.model|| ''+"</td>";
-    r = r + "<tr><th>Feed</th><td>"+doc.feed|| ''+"</td>";
-    r = r + "<tr><th>URL</th><td><small style='font-size:10px;'><a href='"+baseurl+"'>"+baseurl+"</a></small></td></tr>";
-    r = r + "<tr><th>Secret</th><td>Redacted</td>";
-    r = r + "<tr><th>Initial Req Request</th><td>"+doc.firstseen|| ''+"</td>";
-    r = r + "<tr><th>Last Reg Reqeust</th><td>"+doc.lastseen|| ''+"</td>";
+    r = r + '<style>td,th { padding:5px; } .form-signin { max-width:700px !important; width: 700 !important%; } </style>';
+    r = r + "<body style='text-center'>";
+    r = r + "<form method='get' action='"+postUrl+"' class='form-signin'>";
+    r = r + "<h3 class='form-signin'>Device Inventory Details</h3>"
+    r = r + "<table class='form-signin table table-striped'>";
+    r = r + "<tr><th>ID</th><td><input type='text' name='id' class='form-control-plaintext' value='"+doc._id+"' readonly='true' /></td></tr>";
+    r = r + "<tr><th>MAC</th><td><input type='text' name='mac' class='form-control-plaintext' value='"+doc.mac+"' /></td></tr>";
+    r = r + "<tr><th>Token</th><td><code>"+doc.token|| ''+"</code></td></tr>";
+    r = r + "<tr><th>Friendly Name</th><td><input type='text' name='name' class='form-control-plaintext' value='"+doc.name+"' /></td></tr>";
+    r = r + "<tr><th>Location</th><td><input type='text' name='location' class='form-control-plaintext' value='"+doc.location+"' /></td></tr>";
+    r = r + "<tr><th>Model</th><td><input type='text' name='model' class='form-control-plaintext' value='"+doc.model+"' /></td></tr>";
+    r = r + "<tr><th>Feed</th><td><input type='text' name='feed' class='form-control-plaintext' value='"+doc.feed+"' /></td></tr>";
+    r = r + "<tr><th>URL</th><td><input type='text' name='baseurl' class='form-control-plaintext' value='"+doc.baseurl+"' /></td></tr></tr>";
+    r = r + "<tr><th>Secret</th><td><input type='text' name='devicesecret' class='form-control-plaintext' value='' placeholder='REDACTED, REENTER!' /></td></tr>";
+    r = r + "<tr><th>Initial Req Request</th><td>"+doc.firstseen|| ''+"</td></tr>";
+    r = r + "<tr><th>Last Reg Reqeust</th><td>"+doc.lastseen|| ''+"</td></tr></tr>";
+    r = r + "<tr><td colspan='2'><input type='password' class='form-control' id='secret' name='secret' placeholder='SECRET'></td></tr>";
+    r = r + "<tr><td colspan='2' style='text-align:center;'><button type='submit' class='btn btn-primary'>Save</button></td></tr>";
     r = r + "<tr><th>QR Code</th><td style='background-color:#ffffff; text-align:center;'><img src='https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl="+encodeURI(thisUrl)+"'/></td>";
-    r = r + "</table></body></html>";
+    r = r + "</table></form></body></html>";
   }
   else {
     r = r + "<html><body><h1>Device Inventory Details</h1><h2>Info not found!</h2></body></html>";
