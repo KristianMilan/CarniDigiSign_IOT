@@ -52,8 +52,10 @@ exports = async function(payload,response) {
     r = r + "<tr class='table-warning'><td colspan='2'><input type='password' class='form-control' id='secret' name='secret' placeholder='SECRET'></td></tr>";
     r = r + "<tr><td colspan='2' style='text-align:center;'><button type='submit' class='btn btn-warning'>Save</button></td></tr>";
     r = r + "<tr><th>QR Code</th><td style='background-color:#ffffff; text-align:center;'><img src='https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl="+encodeURI(thisUrl)+"'/></td>";
+    r = r + "<tr class='table-danger'><td colspan='2' style='text-align:center;'><button onclick='del()' class='btn btn-danger'>Delete Registration</button></td></tr>";
     r = r + "</table></form>";
-    r = r + "<script>function validateForm() { if((document.forms['f']['devicesecret'].value.length>0)&&(document.forms['f']['secret'].value.length>0)) { return true; } else { alert('You must enter both secrets!'); return false;}}</script>"
+    r = r + "<script>function validateForm() { if((document.forms['f']['devicesecret'].value.length>0)&&(document.forms['f']['secret'].value.length>0)) { return true; } else { alert('You must enter both secrets!'); return false;}}";
+    r = r + " function del() { s = document.getElementById('secret').value; window.location = '"+rootUrl+"deleteRegistration?id="+doc._id+"&secret='+s;}</script>"
     r = r + "</body></html>";
   }
   else {
