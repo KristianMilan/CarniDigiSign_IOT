@@ -1,0 +1,29 @@
+.printonly { 
+    display:none;
+} 
+
+td,th { 
+    padding:5px; 
+} 
+
+.form-signin { 
+    max-width:700px !important; 
+    width: 700 !important; 
+} 
+
+input { 
+    border:solid 2px gray !important;
+} 
+
+@media print{
+    .no-print, .no-print *{
+        display: none !important;
+    }
+    input {
+        font-size:10px !important; 
+        border:none !important;
+    } 
+    .printonly {
+        display:block;
+    }
+} 

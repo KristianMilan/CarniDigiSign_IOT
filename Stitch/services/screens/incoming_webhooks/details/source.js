@@ -32,7 +32,7 @@ exports = async function(payload,response) {
     r = r + "<html><head><title>Device Inventory Details</title></head>";
     r = r +'<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">';
     r = r + '<link rel="stylesheet" href="https://getbootstrap.com/docs/4.2/examples/sign-in/signin.css">';
-    r = r + '<style>.printonly { display:none;} td,th { padding:5px; } .form-signin { max-width:700px !important; width: 700 !important%; } input { border:solid 2px gray !important;} @media print{.no-print, .no-print *{display: none !important;} input {font-size:10px !important; border:none !important;} .printonly {display:block;}} </style>';
+    r = r + '<link rel="stylesheet" href="https://stitch-statichosting-prod.s3.amazonaws.com/5be43cf3fdc7289932fcad43/details.css">';
     r = r + "<body style='text-center'>";
     r = r + "<form method='get' action='"+postUrl+"' class='form-signin' onsubmit='return validateForm()' id='f' name='f'>";
     r = r + "<h3 class='form-signin'>Device Inventory Details</h3>";
@@ -48,14 +48,23 @@ exports = async function(payload,response) {
     r = r + "<tr><th>Model</th><td><input type='text' name='model' class='form-control-plaintext' value='"+d(doc.model)+"' /></td></tr>";
     r = r + "<tr><th>Feed</th><td><input type='text' name='feed' class='form-control-plaintext no-print' value='"+d(doc.feed)+"' /><code class='printonly'>"+d(doc.feed)+"</code></td></tr>";
     r = r + "<tr><th>URL</th><td><input type='text' name='baseurl' class='form-control-plaintext no-print' value='"+d(doc.baseurl)+"' /><code class='printonly'>"+d(doc.baseurl)+"</code></td></tr></tr>";
+    
+    if(doc.hasOwnProperty('kvp')) {
+      r = r + "<tr><th>KVP</th><td>";
+      for(var i = 0; i < doc.kvp.length; i++) {
+        r = r + "<input type='text' name='kvpkey[]' class='form-control-plaintext' value='"+doc.kvp[i].key+"' style='width:45%;float:left;margin-right:5%;' />"
+        r = r + "<input type='text' name='kvpval[]' class='form-control-plaintext' value='"+doc.kvp[i].value+"' style='width:45%;float:left;' /><br/>"
+      }
+      r = r + "</td></tr>";
+    }
+    
     r = r + "<tr class='table-warning no-print'><th>Secret</th><td><input type='text' name='devicesecret' class='form-control-plaintext' value='' placeholder='REDACTED, REENTER!' /></td></tr>";
     r = r + "<tr class='table-warning no-print'><td colspan='2'><input type='password' class='form-control' id='secret' name='secret' placeholder='SECRET'></td></tr>";
     r = r + "<tr class='no-print'><td colspan='2' style='text-align:center;'><button type='submit' class='btn btn-warning'>Save</button></td></tr>";
     r = r + "<tr><th>QR Code</th><td style='background-color:#ffffff; text-align:center;'><img src='https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl="+encodeURI(thisUrl)+"'/></td>";
-    r = r + "<tr class='table-danger no-print'><td colspan='2' style='text-align:center;'><button onclick='del()' type='button' class='btn btn-danger'>Delete Registration</button></td></tr>";
+    r = r + "<tr class='table-danger no-print'><td colspan='2' style='text-align:center;'><button onclick='del(\""+rootUrl+"\", \""+doc._id+"\")' type='button' class='btn btn-danger'>Delete Registration</button></td></tr>";
     r = r + "</table></form>";
-    r = r + "<script>function validateForm() { if((document.forms['f']['devicesecret'].value.length>0)&&(document.forms['f']['secret'].value.length>0)) { return true; } else { alert('You must enter both secrets!'); return false;}}";
-    r = r + " function del() { s = document.getElementById('secret').value; window.location = '"+rootUrl+"deleteRegistration?id="+doc._id+"&secret='+s;}</script>"
+    r = r + "<script src='https://stitch-statichosting-prod.s3.amazonaws.com/5be43cf3fdc7289932fcad43/details.js'></script>";
     r = r + "</body></html>";
   }
   else {
