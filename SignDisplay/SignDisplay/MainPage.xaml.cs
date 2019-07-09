@@ -207,7 +207,7 @@ namespace SignDisplay
             {
                 //https://stackoverflow.com/questions/31746613/how-do-i-get-a-unique-identifier-for-a-device-within-windows-10-universal
                 var deviceInformation = new EasClientDeviceInformation();
-                string Id = deviceInformation.Id.ToString();
+                string Id = deviceInformation.FriendlyName.ToString() + deviceInformation.Id.ToString();
 
                 ProvisionManager pm = new ProvisionManager();
                 AutoProvision ap;
